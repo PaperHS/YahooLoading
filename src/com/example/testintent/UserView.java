@@ -1,7 +1,6 @@
 package com.example.testintent;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,28 +14,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class LoadingYahooView extends View implements ILoadingYahoo{
+public class UserView extends View{
 	
 	defineDrawable d;
 	Paint p = new Paint();
 	private int	centerX;
 	private int	centerY;
 	private int	outerRadius;
-	private Context context;
-	public LoadingYahooView(Context context) {
+	public UserView(Context context) {
 		this(context,null,0);
 	}
 
-	public LoadingYahooView(Context context, AttributeSet attrs) {
+	public UserView(Context context, AttributeSet attrs) {
 		this(context, attrs,0);
 	}
 	
-	public LoadingYahooView(Context context, AttributeSet attrs,int defStyle){
+	public UserView(Context context, AttributeSet attrs,int defStyle){
 		super(context, attrs, defStyle);
 		this.setClickable(true);
 		this.setFocusable(true);
-		this.context = context;
 		d = new defineDrawable();
+		p.setAlpha(255);
+		p.setColor(Color.RED);
+		p.setStyle(Style.FILL);
+		p.setAntiAlias(true);
 		d.setCallback(this);
 	}
 	
@@ -44,6 +45,7 @@ public class LoadingYahooView extends View implements ILoadingYahoo{
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		d.draw(canvas);
+		canvas.drawCircle(centerX, centerY, 20, p);
 	}
 	
 	@Override
@@ -73,22 +75,6 @@ public class LoadingYahooView extends View implements ILoadingYahoo{
 	public void invalidateDrawable(Drawable drawable) {
 		this.invalidate();
 		super.invalidateDrawable(drawable);
-	}
-
-	@Override
-	public void setColors(int[] colors) {
-		Resources r = context.getResources();
-		int[] c = new int[colors.length];
-		for (int i = 0; i < c.length; i++) {
-			c[i] = r.getColor(colors[i]);
-		}
-		
-	}
-
-	@Override
-	public void setRadius(int radius) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
