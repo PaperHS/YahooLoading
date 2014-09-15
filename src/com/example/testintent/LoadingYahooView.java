@@ -2,6 +2,7 @@ package com.example.testintent;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,6 +40,10 @@ public class LoadingYahooView extends View implements ILoadingYahoo{
 		d = new defineDrawable();
 		d.setCallback(this);
 	}
+	
+	private TypedArray getTypedArray(Context context, AttributeSet attributeSet, int[] attr) {
+        return context.obtainStyledAttributes(attributeSet, attr, 0, 0);
+    }
 	
 	@Override
 	protected void onDraw(Canvas canvas) {

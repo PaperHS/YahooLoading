@@ -48,9 +48,11 @@ public class defineDrawable extends Drawable implements Animatable,ILoadingYahoo
 	boolean isEnding = false;
 	boolean isFirst ;
 	Canvas tmpCanvas;
-	
+	private Bitmap bitmap;
+	private boolean isInner;
 	public defineDrawable() {
 		isFirst = true;
+		isInner = false;
 		mEndInnerPaint = new Paint();
 		mEndInnerPaint.setAlpha(0);
 		mEndInnerPaint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
@@ -146,10 +148,38 @@ public class defineDrawable extends Drawable implements Animatable,ILoadingYahoo
 			public void onAnimationEnd(Animator arg0) {
 				isEnding = true;
 				mEndAnimator.start();
+				isInner = false;
 			}
 			
 			@Override
 			public void onAnimationCancel(Animator arg0) {
+				
+			}
+		});
+		mEndAnimator.addListener(new AnimatorListener() {
+			
+			@Override
+			public void onAnimationStart(Animator animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				mEndAnimator.start();
+				isInner = true;
+				
+			}
+			
+			@Override
+			public void onAnimationCancel(Animator animation) {
+				// TODO Auto-generated method stub
 				
 			}
 		});
@@ -165,20 +195,48 @@ public class defineDrawable extends Drawable implements Animatable,ILoadingYahoo
 		canvas.save();
 		canvas.restore();
 		canvas.translate(canvas.getWidth()/2, canvas.getHeight()/2);
+		
+		if (isFirst) {
+			bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Config.ARGB_8888);
+			tmpCanvas = new Canvas(bitmap);
+			tmpCanvas.drawColor(Color.TRANSPARENT);
+			tmpCanvas.translate(tmpCanvas.getWidth()/2, tmpCanvas.getHeight()/2);
+			isFirst = false;
+			
+		}
+
+		
+		tmpCanvas.save();
+		tmpCanvas.restore();
 		if (!isEnding) {
+			Log.e("hshs", "rotate");
+
+			
 			canvas.rotate(-PressedProgress);
-	        canvas.drawCircle(0, centerProgress, mBallRadius, paints[0]);
-			canvas.drawCircle(centerProgress*0.87f, centerProgress*0.5f, mBallRadius, paints[1]);
-			canvas.drawCircle(centerProgress*0.87f, -centerProgress*0.5f, mBallRadius, paints[2]);
-			canvas.drawCircle(0, -centerProgress, mBallRadius, paints[3]);
-			canvas.drawCircle(-centerProgress*0.87f, -centerProgress*0.5f, mBallRadius, paints[4]);
-			canvas.drawCircle(-centerProgress*0.87f, centerProgress*0.5f, mBallRadius, paints[5]);
+			Paint paint = new Paint();  
+			paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));  
+			tmpCanvas.drawPaint(paint);  
+			paint.setXfermode(new PorterDuffXfermode(Mode.SRC));  
+			tmpCanvas.drawCircle(0, centerProgress, mBallRadius, paints[0]);
+			tmpCanvas.drawCircle(centerProgress*0.87f, centerProgress*0.5f, mBallRadius, paints[1]);
+			tmpCanvas.drawCircle(centerProgress*0.87f, -centerProgress*0.5f, mBallRadius, paints[2]);
+			tmpCanvas.drawCircle(0, -centerProgress, mBallRadius, paints[3]);
+			tmpCanvas.drawCircle(-centerProgress*0.87f, -centerProgress*0.5f, mBallRadius, paints[4]);
+			tmpCanvas.drawCircle(-centerProgress*0.87f, centerProgress*0.5f, mBallRadius, paints[5]);
 			if (isSotp && Math.abs(PressedProgress) < 2) {
 				animator.cancel();
 			}
 		}else {
-			canvas.drawCircle(0, 0, mBallRadius+mEndProgress, circlPaint);
+			if (isInner) {
+				tmpCanvas.drawCircle(0, 0, mEndProgress,mEndInnerPaint);
+			}else {
+				tmpCanvas.drawCircle(0, 0, mBallRadius+mEndProgress, circlPaint);
+			}
+			
+			
+		
 		}
+		canvas.drawBitmap(bitmap, -canvas.getWidth()/2, -canvas.getHeight()/2, null);
 	}
 	
 	@Override
