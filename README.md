@@ -1,1 +1,4 @@
-#LoadingAnimation
+YahooLoading
+============
+
+imitation Yahoo News Digest
